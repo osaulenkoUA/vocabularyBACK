@@ -121,7 +121,7 @@ function validateCreateUser(req, res, next) {
 		token: Joi.string(),
 	});
 	const result = createUserRules.validate(req.body);
-	if (result.error) return res.status(400).send({	code:409, message: 'missing required name field' });
+	if (result.error) return res.status(400).send({	code:400, message: 'missing required name field' });
 
 	next();
 }
@@ -134,7 +134,7 @@ function validateSignIn(req, res, next) {
 
 	const validationResult = signInRules.validate(req.body);
 	if (validationResult.error) {
-		return res.status(400).send(validationResult.error);
+		return res.status(400).send({code:400, message: 'missing required name field' });
 	}
 
 	next();
