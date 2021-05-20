@@ -27,7 +27,7 @@ async function addNewUser(req, res, next) {
 
 		const isEmailExist = await usersModel.findUserByEmail(email);
 
-		if (isEmailExist) return res.status(409).json({ message: 'Authentication failed' });
+		if (isEmailExist) return res.status(409).json({ message: 'Authentication failed',code:401 });
 
 		const user = await usersModel.create({
 			email,
@@ -38,6 +38,7 @@ async function addNewUser(req, res, next) {
 		return res.status(201).json({ token, user: { email: user.email, name: user.name } });
 	} catch (err) {
 		next(err);
+		return res.status(404).json({ mesage: 'Server does not respond',code:401 });
 	}
 }
 
@@ -62,7 +63,6 @@ async function checkUser(email, password) {
 
 async function signIn(req, res, next) {
 	try {
-		console.log('---------->>>>>>', req);
 		const { email, password } = req.body;
 		const token = await checkUser(email, password);
 		const userId = await jwt.verify(token, process.env.JWT_SECRET).id;
@@ -72,6 +72,7 @@ async function signIn(req, res, next) {
 		return res.status(200).json({ token, user: { email, name: user.name } });
 	} catch (err) {
 		next(err);
+		return res.status(404).json({ mesage: 'Incorrect user email or password',code:401 });
 	}
 }
 
