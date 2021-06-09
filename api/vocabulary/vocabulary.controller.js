@@ -52,17 +52,34 @@ async function deleteWord(req, res, next) {
 
 function validateId(req, res, next) {
 	const { id } = req.params;
-
+	console.log('id-------->', id);
 	if (!ObjectId.isValid(id)) {
 		return res.status(400).send();
 	}
 
 	next();
 }
+
+async function updateWord(req, res, next) {
+	try {
+		const wordId = req.params.id;
+		console.log('wordId----------->', wordId);
+		const contactToUpdate = await vocabularyModel.findWordByIdAndUpdate(wordId, req.body);
+		if (!contactToUpdate) {
+			return res.status(404).send();
+		}
+
+		return res.status(200).send(contactToUpdate);
+	} catch (err) {
+		next(err);
+	}
+}
+
 module.exports = {
 	addWord,
 	getWord,
 	authorize,
 	deleteWord,
 	validateId,
+	updateWord,
 };
